@@ -5,7 +5,13 @@
       "Bash(curl -s \"https://liveblocks.io/docs/api-reference/rest-api-endpoints\")",
       "Bash(curl -s \"https://liveblocks.io/docs/products/yjs\")",
       "Bash(curl -s \"https://liveblocks.io/docs/pricing\")",
-      "WebFetch(domain:liveblocks.io)"
+      "WebFetch(domain:liveblocks.io)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(shopt -s dotglob)",
+      "Bash(mv dexter-temp/* .)",
+      "Bash(mv dexter-temp/.* .)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)"
     ]
   }
 }

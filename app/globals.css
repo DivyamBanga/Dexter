@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Dexter dark theme */
+  --color-dexter-bg: #0d1117;
+  --color-dexter-surface: #161b22;
+  --color-dexter-border: #30363d;
+  --color-dexter-text: #e6edf3;
+  --color-dexter-text-muted: #8b949e;
+  --color-dexter-accent: #58a6ff;
+  --color-dexter-accent-hover: #79c0ff;
+  --color-dexter-danger: #f85149;
+  --color-dexter-success: #3fb950;
+
+  /* Cursor colors for collaborative editing */
+  --color-dexter-cursor-1: #58a6ff;
+  --color-dexter-cursor-2: #f778ba;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--color-dexter-bg);
+  color: var(--color-dexter-text);
+}
+
+/* Scrollbar styling for dark theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-dexter-border) transparent;
+}
+
+::selection {
+  background-color: rgba(88, 166, 255, 0.3);
+}
