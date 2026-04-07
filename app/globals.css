@@ -35,3 +35,49 @@ body {
 ::selection {
   background-color: rgba(88, 166, 255, 0.3);
 }
+
+/* Remote cursor styles for y-codemirror */
+.cm-ySelectionInfo {
+  padding: 1px 4px;
+  font-size: 11px;
+  font-family: var(--font-inter), sans-serif;
+  border-radius: 3px 3px 3px 0;
+  color: #0d1117;
+  font-weight: 600;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  top: -1.3em;
+  left: -1px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cm-ySelection {
+  opacity: 0.3;
+}
+
+.cm-yLineSelection {
+  opacity: 0.15;
+}
+
+.cm-yCursor {
+  position: relative;
+  border-left: 2px solid;
+  border-color: inherit;
+  margin-left: -1px;
+}
+
+/* CodeMirror overrides for Dexter */
+.cm-editor {
+  height: 100%;
+}
+
+.cm-editor .cm-scroller {
+  overflow: auto;
+}
+
+.cm-editor.cm-focused {
+  outline: none;
+}
