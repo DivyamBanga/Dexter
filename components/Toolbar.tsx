@@ -3,14 +3,17 @@
 import { useRouter } from "next/navigation";
 import { useOthers, useSelf } from "@liveblocks/react";
 
+import type { PyodideStatus } from "@/lib/usePyodide";
+
 interface ToolbarProps {
   fileName: string;
   roomId: string;
   onRun: () => void;
   running?: boolean;
+  pyodideStatus?: PyodideStatus;
 }
 
-export function Toolbar({ fileName, roomId, onRun, running }: ToolbarProps) {
+export function Toolbar({ fileName, roomId, onRun, running, pyodideStatus }: ToolbarProps) {
   const router = useRouter();
   const self = useSelf();
   const others = useOthers();
@@ -46,10 +49,16 @@ export function Toolbar({ fileName, roomId, onRun, running }: ToolbarProps) {
       <div className="flex items-center gap-2">
         <button
           onClick={onRun}
-          disabled={running}
+          disabled={running || pyodideStatus !== "ready"}
           className="px-3 py-1.5 rounded-md bg-dexter-success/90 text-dexter-bg font-semibold text-xs hover:bg-dexter-success transition-colors disabled:opacity-50 cursor-pointer"
         >
-          {running ? "Running..." : "Run"}
+          {pyodideStatus === "loading"
+            ? "Loading Python..."
+            : pyodideStatus === "error"
+              ? "Python Error"
+              : running
+                ? "Running..."
+                : "Run"}
         </button>
         <button
           id="share-btn"

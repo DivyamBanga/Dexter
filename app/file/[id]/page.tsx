@@ -6,6 +6,7 @@ import { getUsername } from "@/lib/username";
 import { LiveblocksWrapper } from "@/components/LiveblocksWrapper";
 import { CollaborativeEditor } from "@/components/CollaborativeEditor";
 import { Toolbar } from "@/components/Toolbar";
+import { usePyodide } from "@/lib/usePyodide";
 
 interface FileInfo {
   id: string;
@@ -13,23 +14,15 @@ interface FileInfo {
 }
 
 function EditorContent({ file }: { file: FileInfo }) {
-  const [running, setRunning] = useState(false);
-  const [output, setOutput] = useState("");
   const getCodeRef = useRef<(() => string) | null>(null);
+  const { status, output, isRunning, executionTime, runCode, clearOutput } =
+    usePyodide();
 
   const handleRun = useCallback(() => {
     const code = getCodeRef.current?.();
     if (code == null) return;
-
-    setRunning(true);
-    setOutput("");
-
-    // Placeholder — Phase 6 will add Pyodide execution
-    setTimeout(() => {
-      setOutput(`[Pyodide not loaded yet]\n\nCode to run:\n${code}`);
-      setRunning(false);
-    }, 300);
-  }, []);
+    runCode(code);
+  }, [runCode]);
 
   return (
     <div className="flex flex-1 flex-col h-full overflow-hidden">
@@ -37,7 +30,8 @@ function EditorContent({ file }: { file: FileInfo }) {
         fileName={file.name}
         roomId={file.id}
         onRun={handleRun}
-        running={running}
+        running={isRunning}
+        pyodideStatus={status}
       />
       <div className="flex flex-1 overflow-hidden">
         {/* Editor pane */}
@@ -51,14 +45,23 @@ function EditorContent({ file }: { file: FileInfo }) {
             <span className="text-xs text-dexter-text-muted font-semibold uppercase tracking-wide">
               Output
             </span>
-            {output && (
-              <button
-                onClick={() => setOutput("")}
-                className="text-xs text-dexter-text-muted hover:text-dexter-text transition-colors cursor-pointer"
-              >
-                Clear
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {executionTime != null && (
+                <span className="text-xs text-dexter-text-muted tabular-nums">
+                  {executionTime < 1000
+                    ? `${Math.round(executionTime)}ms`
+                    : `${(executionTime / 1000).toFixed(2)}s`}
+                </span>
+              )}
+              {output && (
+                <button
+                  onClick={clearOutput}
+                  className="text-xs text-dexter-text-muted hover:text-dexter-text transition-colors cursor-pointer"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex-1 overflow-auto p-3">
             {output ? (
@@ -67,7 +70,11 @@ function EditorContent({ file }: { file: FileInfo }) {
               </pre>
             ) : (
               <p className="text-sm text-dexter-text-muted/50 italic">
-                Run your code to see output here.
+                {status === "loading"
+                  ? "Python is loading..."
+                  : status === "error"
+                    ? "Failed to load Python."
+                    : "Run your code to see output here."}
               </p>
             )}
           </div>
