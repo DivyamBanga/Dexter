@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(curl -s \"https://liveblocks.io/docs/api-reference/rest-api-endpoints\")",
+      "Bash(curl -s \"https://liveblocks.io/docs/products/yjs\")",
+      "Bash(curl -s \"https://liveblocks.io/docs/pricing\")",
+      "WebFetch(domain:liveblocks.io)"
     ]
   }
 }
