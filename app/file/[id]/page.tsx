@@ -6,6 +6,7 @@ import { getUsername } from "@/lib/username";
 import { LiveblocksWrapper } from "@/components/LiveblocksWrapper";
 import { CollaborativeEditor } from "@/components/CollaborativeEditor";
 import { Toolbar } from "@/components/Toolbar";
+import { Spinner } from "@/components/Spinner";
 import { usePyodide } from "@/lib/usePyodide";
 
 interface FileInfo {
@@ -33,14 +34,14 @@ function EditorContent({ file }: { file: FileInfo }) {
         running={isRunning}
         pyodideStatus={status}
       />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
         {/* Editor pane */}
-        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <div className="flex flex-col flex-1 min-w-0 min-h-0 overflow-hidden">
           <CollaborativeEditor getCodeRef={getCodeRef} onRunCode={handleRun} />
         </div>
 
         {/* Output pane */}
-        <div className="flex flex-col w-[380px] border-l border-dexter-border shrink-0">
+        <div className="flex flex-col h-[200px] md:h-auto md:w-[380px] border-t md:border-t-0 md:border-l border-dexter-border shrink-0">
           <div className="flex items-center justify-between px-3 py-2 border-b border-dexter-border bg-dexter-surface">
             <span className="text-xs text-dexter-text-muted font-semibold uppercase tracking-wide">
               Output
@@ -69,13 +70,16 @@ function EditorContent({ file }: { file: FileInfo }) {
                 {output}
               </pre>
             ) : (
-              <p className="text-sm text-dexter-text-muted/50 italic">
-                {status === "loading"
-                  ? "Python is loading..."
-                  : status === "error"
-                    ? "Failed to load Python."
-                    : "Run your code to see output here."}
-              </p>
+              <div className="flex items-center gap-2">
+                {status === "loading" && <Spinner />}
+                <p className="text-sm text-dexter-text-muted/50 italic">
+                  {status === "loading"
+                    ? "Python is loading..."
+                    : status === "error"
+                      ? "Failed to load Python."
+                      : "Run your code to see output here."}
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -126,8 +130,9 @@ export default function FilePage() {
 
   if (!file) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-dexter-text-muted text-sm">Loading...</p>
+      <div className="flex flex-1 items-center justify-center gap-2">
+        <Spinner />
+        <p className="text-dexter-text-muted text-sm">Loading file...</p>
       </div>
     );
   }

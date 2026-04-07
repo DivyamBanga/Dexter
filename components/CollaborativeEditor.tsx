@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, MutableRefObject } from "react";
 import { useRoom, useSelf } from "@liveblocks/react";
+import { Spinner } from "@/components/Spinner";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import * as Y from "yjs";
 import { EditorView, basicSetup } from "codemirror";
@@ -100,7 +101,8 @@ export function CollaborativeEditor({
 
   if (!self) {
     return (
-      <div className="flex flex-1 items-center justify-center">
+      <div className="flex flex-1 items-center justify-center gap-2">
+        <Spinner />
         <p className="text-dexter-text-muted text-sm">Connecting...</p>
       </div>
     );

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getUsername, clearUsername } from "@/lib/username";
 import { timeAgo } from "@/lib/time";
+import { Spinner } from "@/components/Spinner";
 
 interface FileItem {
   id: string;
@@ -107,7 +108,8 @@ export default function DashboardPage() {
 
       {/* File List */}
       {loading ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center gap-2">
+          <Spinner />
           <p className="text-dexter-text-muted text-sm">Loading files...</p>
         </div>
       ) : files.length === 0 ? (
