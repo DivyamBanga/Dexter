@@ -1,6 +1,6 @@
 // Pyodide Web Worker — executes Python code in WebAssembly.
 
-const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/";
+const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.29.3/full/";
 
 let pyodide = null;
 let signalBuffer = null;

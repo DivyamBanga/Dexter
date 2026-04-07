@@ -10,6 +10,7 @@ export function usePyodide() {
   const dataRef = useRef<SharedArrayBuffer | null>(null);
   const startTimeRef = useRef(0);
 
+  const statusRef = useRef<PyodideStatus>("idle");
   const [status, setStatus] = useState<PyodideStatus>("idle");
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
@@ -34,6 +35,7 @@ export function usePyodide() {
 
       switch (type) {
         case "ready":
+          statusRef.current = "ready";
           setStatus("ready");
           break;
 
@@ -81,9 +83,11 @@ export function usePyodide() {
     };
 
     worker.onerror = () => {
+      statusRef.current = "error";
       setStatus("error");
     };
 
+    statusRef.current = "loading";
     setStatus("loading");
     worker.postMessage({ type: "init", buffers });
 
@@ -93,17 +97,14 @@ export function usePyodide() {
     };
   }, []);
 
-  const runCode = useCallback(
-    (code: string) => {
-      if (!workerRef.current || status !== "ready") return;
-      setOutput("");
-      setExecutionTime(null);
-      setIsRunning(true);
-      startTimeRef.current = performance.now();
-      workerRef.current.postMessage({ type: "run", code });
-    },
-    [status],
-  );
+  const runCode = useCallback((code: string) => {
+    if (!workerRef.current || statusRef.current !== "ready") return;
+    setOutput("");
+    setExecutionTime(null);
+    setIsRunning(true);
+    startTimeRef.current = performance.now();
+    workerRef.current.postMessage({ type: "run", code });
+  }, []);
 
   const clearOutput = useCallback(() => {
     setOutput("");

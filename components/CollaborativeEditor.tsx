@@ -23,9 +23,20 @@ export function CollaborativeEditor({
   const room = useRoom();
   const self = useSelf();
   const editorRef = useRef<HTMLDivElement>(null);
+  const onRunCodeRef = useRef(onRunCode);
+  onRunCodeRef.current = onRunCode;
+
+  // Store self info in a ref so the editor effect doesn't re-run on every presence update
+  const selfInfoRef = useRef(self?.info);
+  selfInfoRef.current = self?.info;
+
+  // Track whether self has loaded at least once
+  const selfReady = self !== null;
 
   useEffect(() => {
-    if (!editorRef.current || !self) return;
+    if (!editorRef.current || !selfReady) return;
+
+    const info = selfInfoRef.current;
 
     const ydoc = new Y.Doc();
     const provider = new LiveblocksYjsProvider(room, ydoc);
@@ -33,16 +44,16 @@ export function CollaborativeEditor({
     const undoManager = new Y.UndoManager(ytext);
 
     provider.awareness.setLocalStateField("user", {
-      name: self.info?.name ?? "Anonymous",
-      color: self.info?.color ?? "#58a6ff",
-      colorLight: (self.info?.color ?? "#58a6ff") + "40",
+      name: info?.name ?? "Anonymous",
+      color: info?.color ?? "#58a6ff",
+      colorLight: (info?.color ?? "#58a6ff") + "40",
     });
 
     const runKeymap = keymap.of([
       {
         key: "Mod-Enter",
         run: () => {
-          onRunCode?.();
+          onRunCodeRef.current?.();
           return true;
         },
       },
@@ -85,7 +96,7 @@ export function CollaborativeEditor({
       provider.destroy();
       ydoc.destroy();
     };
-  }, [room, self, onRunCode, getCodeRef]);
+  }, [room, selfReady, getCodeRef]);
 
   if (!self) {
     return (
